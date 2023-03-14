@@ -1,0 +1,138 @@
+plugins {
+    id 'org.jetbrains.kotlin.android'
+    id 'kotlin-kapt'
+    id 'maven-publish'
+}
+
+if(isCoreRelease){
+    apply plugin: 'com.android.application'
+}else{
+    apply plugin: 'com.android.library'
+}
+apply plugin: 'kotlin-parcelize'
+
+//引用公共变量
+def androidId = rootProject.ext.androidId
+def appId = rootProject.ext.appId
+def support = rootProject.ext.dependencies
+def libVersion = rootProject.libVersion
+
+android {
+    namespace appId.BusiServices_hems
+    compileSdk androidId.compileSdk
+
+    defaultConfig {
+        if(isCoreRelease){
+            applicationId appId.core_LibCom_hems
+        }
+        minSdk androidId.minSdk
+        targetSdk androidId.targetSdk
+        versionCode androidId.versionCode
+        versionName androidId.versionName
+        multiDexEnabled true
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility androidId.sourceCompatibility
+        targetCompatibility androidId.targetCompatibility
+    }
+    kotlinOptions {
+        jvmTarget = androidId.jvmTarget
+        freeCompilerArgs += [
+                "-Xjvm-default=all",
+        ]
+    }
+
+    //配置不同模式下的资源路径
+    sourceSets {
+        main {
+            if (isBusiServiceRelease){
+                //组件模式，打包单个组件apk
+                manifest.srcFile 'src/main/debug/AndroidManifest.xml'
+                java {
+                    srcDirs 'src/main/java', 'src/main/debug/java'
+                }
+                res {
+                    srcDirs 'src/main/res', 'src/main/debug/res'
+                }
+            }else{
+                //集成模式，整个项目打包apk
+                manifest.srcFile 'src/main/AndroidManifest.xml'
+                java {
+                    exclude 'src/main/debug/java'
+                }
+                res {
+                    exclude 'src/main/debug/res'
+                }
+            }
+
+        }
+    }
+    buildFeatures {
+        viewBinding androidId.viewBinding
+    }
+}
+
+task generateSourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier 'sources'
+}
+
+afterEvaluate {
+    if (!isBusiServiceRelease) {
+        publishing {
+            publications {
+                maven(MavenPublication) {
+                    groupId "com.autel.buiservices"
+                    artifactId 'hems'
+                    version "1.0.0"
+                    from components.release
+//                    artifact generateSourcesJar
+                }
+            }
+            repositories {
+                maven {
+                    url autelMavenUrl
+                    allowInsecureProtocol = true
+                    // 仓库用户名密码
+                    credentials {
+                        username = mavenUsername
+                        password = mavenPassword
+                    }
+                }
+            }
+        }
+    }
+}
+
+dependencies {
+    /**
+     * 依赖引入常用命令：
+     * implementation-不能传递依赖，不将自己依赖的库暴露给依赖它的库使用。好处：避免对依赖它的库造成依赖冲突，每个组件依赖结构更清晰。
+     * api-依赖可传递，将自己依赖的库也暴露给依赖它的库使用，避免重复配置。
+     * 本框架因组件间会有灵活拆解，自由组合打包的需求，因此此处优先推荐使用前者配置（implementation）
+     */
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    //循环引入公共依赖库
+    support.each { k, v -> implementation v }
+    implementation "com.autel.utils:utils:${libVersion.utils}"
+
+    //子组件依赖配置在这儿
+    if(!isCoreRelease){
+        implementation project(path: ':Core:LibCom:hems')
+    }else{
+
+    }
+
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+}

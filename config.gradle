@@ -1,0 +1,125 @@
+
+ext{
+    /*组件集成模式与组件模式控制开关区
+    *提示：
+    * 1、在切换到底层组件时，直接run目标组件层，不需要关注表层组件的报错提示，这是正常现象。
+    * 2、在编译打包任意一层的时候，务必保持其他层的开关处于false关闭状态；宿主集成模式为全false。*/
+    //debug标识
+    isDebug = false
+    //okhttp请求日志控制开关
+    isDebugOkhttp = true
+
+    //--------------------------------------组件集成与组件模式切换配置------------------------------//
+    //业务组件单独调试(Business中的组件)  true:组件模式  false:集成模式
+    isBusinessRelease = false
+    //基础业务组件层(BusiServices中的组件)  true:组件模式  false:集成模式
+    isBusiServiceRelease = false
+    //核心组件库单独调试(Core中的组件)   true:组件模式   false:集成模式
+    isCoreRelease = false
+    //基础业务组件单独调试(Base中的组件)   true:组件模式   false:集成模式
+    isBaseRelease = false
+    //充放电业务组件单独调试(Business中的组件)  true:组件模式  false:集成模式
+    isUtilsRelease = false
+    //充放电业务组件单独调试(Business中的组件)  true:组件模式  false:集成模式
+    isAts = false
+
+    //模式自动调节
+    if(isBusinessRelease){
+        isBusServiceRelease = false
+        isCoreRelease = false
+        isBaseRelease = false
+        isUtilsRelease = false
+    }else if(isBusiServiceRelease){
+        isCoreRelease = false
+        isBaseRelease = false
+        isUtilsRelease = false
+    }else if(isCoreRelease){
+        isBaseRelease = false
+        isUtilsRelease = false
+    }else if(isBaseRelease){
+        isUtilsRelease = false
+    }
+
+    /* 公共版本变量 所有的组件的版本控制统一抽取的这儿统一控制*/
+    androidId = [
+            compileSdk:29,
+            buildToolsVersion:"28.0.3",
+            minSdk    :21,
+            targetSdk :29,
+            versionCode      :1,
+            versionName      :"1.00",
+            sourceCompatibility:JavaVersion.VERSION_1_8,
+            targetCompatibility:JavaVersion.VERSION_1_8,
+            jvmTarget:'1.8',
+            cmakeVercion:'3.22.1',
+            ndkVersion:'21.4.7075529',
+            minifyEnabled: false ,    //混淆总开关----为了保护代码安全，外发版本apk请打开代码混淆总开关 并配置代码混淆策略做初步代码保护
+            viewBinding : true,
+            compose_version:'1.0.5'
+    ]
+
+    libVersion = [
+            "theme"                     :   "1.0.7",
+            "utils"                     :   "0.0.7",
+            "base_imageloader"          :   "1.0.2",
+            "base_deviceconnect"        :   "1.0.1",
+            "base_network"              :   "1.0.5",
+            "base_storage"              :   "1.0.2",
+            "base_widget_diagnose"      :   "1.0.8",
+            "core_domain"               :   "1.0.7",
+            "core_libcom_hems"          :   "0.0.1",
+            "core_database_equalizer"   :   "1.0.0",
+            "core_netapi_cloud"         :   "1.0.1",
+            "core_netapi_platform"      :   "1.0.0",
+            "nativelib_equalizer"       :   "1.0.0",
+            "arouter_api_version"       :   "1.5.1",
+            "arouter_compiler_version"  :   "1.5.1",
+    ]
+
+    /*添加组件请严格按此规则集中分层添加书写
+ * 1、组件之间的依赖关系|严格遵守同层组件之间不配置依赖
+ * 2、组件层间的依赖关系严格遵守业务层组件可依赖向上抽取层组件，向上抽取层组件不可以依赖底层业务层组件的原则。
+ * 3、理想的依赖关系是业务层到底层组件的逐层依赖，非必要尽量不要跨层依赖。
+ * 4、若遇确实无法避免同层中，无法避开的要依赖的组件时，可考虑将该组件的层级往上移动一层。*/
+    // 组件的命名空间及独立打包apk式的包名配置
+    appId = [
+            //最底层工具
+            "theme"                                 : "com.autel.utils.theme",
+            //功能组件层Base模块
+            "Base_Widget_diagnose"                  : "com.autel.base.widget.diagnose",
+            "Base_Widget_detection"                 : "com.autel.base.widget.detection",
+            //Core核心模块
+            "core_LibCom_hems"                       : "com.autels.core.libcom.hems",
+            "Core_NetApi_cloud"                     : "com.autel.netapi.cloud",
+            //基础业务组件服务层
+            "BusiServices_hems"                     : "com.autel.busiservices.hems",
+            /*不同应用业务domain公用逻辑抽取层*/
+            "BusServices_busisdomain_evci"          : "com.autel.busiservices.busisdomain.evci",
+
+            //业务组件
+            "Business_vcibatterytest"               : "com.autel.business.vcibatterytest",
+            //宿主APP
+            "mainapp"                               : "com.autel.hems"
+    ]
+
+    /*所有组件共同依赖的包库统一抽取到这儿进行统一版本号的管理*/
+    dependencies = [
+            "com.google.android.material"      : "com.google.android.material:material:1.6.1",
+            "androidx.core"                    : "androidx.core:core-ktx:1.6.0",
+            "androidx.appcompat"               : "androidx.appcompat:appcompat:1.4.2",
+            "androidx.constraintlayout"        : "androidx.constraintlayout:constraintlayout:2.1.2",
+            "androidx.lifecycle"               : "androidx.lifecycle:lifecycle-viewmodel:2.5.0",
+            "androidx.liveData"                : "androidx.lifecycle:lifecycle-livedata-ktx:2.5.0",
+            "androidx.lifecycle-runtime"       : "androidx.lifecycle:lifecycle-runtime-ktx:2.5.0",
+            "androidx.viewmodel"               : "androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.0",
+            "kotlin-stdlib"                    : "org.jetbrains.kotlin:kotlin-stdlib:1.5.31",
+            "kotlin-reflect"                   : "org.jetbrains.kotlin:kotlin-reflect:1.5.31",
+            "logger"                           : "com.orhanobut:logger:2.2.0",
+            "appcompat_v4"                     : "androidx.legacy:legacy-support-v4:1.0.0"    //androidx中对应原V4包
+    ]
+
+    mavenUrl = "http://10.240.5.209:8081/repository/maven-public/"
+    autelMavenUrl = "http://10.240.5.209:8081/repository/AutelAndroid/"
+    mavenUsername = "admin"
+    mavenPassword = "admin123"
+}

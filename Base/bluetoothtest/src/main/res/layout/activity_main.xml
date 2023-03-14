@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/response_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+
+    <LinearLayout
+        android:id="@+id/ll1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal">
+        <Button
+            android:id="@+id/charge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="开启充电" />
+
+        <Button
+            android:id="@+id/discharge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="开启放电" />
+
+        <Button
+            android:id="@+id/setwifi"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="配置wifi" />
+
+        <Button
+            android:id="@+id/setpush"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="开启推送" />
+
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/ll1"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/software_version"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="获取更新版本" />
+
+        <Button
+            android:id="@+id/query_wifi"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="网关设置" />
+
+        <Button
+            android:id="@+id/query_device"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="设备状态" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/software_setting_ll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/ll2"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/software_setting"
+            android:layout_width="wrap_content"
+            android:text="开启软件更新设置"
+            android:layout_gravity="center_vertical"
+            android:layout_height="wrap_content"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/server_update"
+                android:layout_width="wrap_content"
+                android:text="执行服务升级"
+                android:layout_height="wrap_content"/>
+
+            <Button
+                android:id="@+id/firmware_update"
+                android:layout_width="wrap_content"
+                android:text="执行固件升级"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/wifi_ll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/software_setting_ll"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:text="wifi名称"
+            android:layout_height="wrap_content"/>
+        <EditText
+            android:id="@+id/wifi_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/wifi_password_ll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/wifi_ll"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:text="wifi密码"
+            android:layout_height="wrap_content"/>
+        <EditText
+            android:id="@+id/wifi_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/psuh_ll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/wifi_password_ll"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:text="推送周期"
+            android:layout_height="wrap_content"/>
+        <EditText
+            android:id="@+id/push_tx"
+            android:text="5000"
+            android:inputType="number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:text="毫秒"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/progress_bar"
+        android:layout_width="match_parent"
+        android:background="#55000000"
+        android:layout_height="match_parent">
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_height="wrap_content"/>
+    </RelativeLayout>
+
+</RelativeLayout>

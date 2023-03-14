@@ -1,0 +1,49 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'com.example.bluetoothtest'
+    compileSdk androidId.compileSdk
+
+    defaultConfig {
+        applicationId "com.example.bluetoothtest"
+
+        minSdk androidId.minSdk
+        targetSdk androidId.targetSdk
+        versionCode androidId.versionCode
+        versionName androidId.versionName
+        multiDexEnabled true
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility androidId.sourceCompatibility
+        targetCompatibility androidId.targetCompatibility
+    }
+}
+
+dependencies {
+    /**
+     * 依赖引入常用命令：
+     * implementation-不能传递依赖，不将自己依赖的库暴露给依赖它的库使用。好处：避免对依赖它的库造成依赖冲突，每个组件依赖结构更清晰。
+     * api-依赖可传递，将自己依赖的库也暴露给依赖它的库使用，避免重复配置。
+     * 本框架因组件间会有灵活拆解，自由组合打包的需求，因此此处优先推荐使用前者配置（implementation）
+     */
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+    implementation 'com.google.code.gson:gson:2.9.1'
+    implementation 'androidx.appcompat:appcompat:1.3.1'
+    //Lifecycle
+    implementation "android.arch.lifecycle:extensions:1.1.1"
+}

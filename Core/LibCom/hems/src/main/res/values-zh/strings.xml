@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="read_data_error">通讯失败</string>
+    <string name="data_lenth_error">通讯数据长度不匹配</string>
+    <string name="data_crc_error">数据无效</string>
+    <string name="send_data_error">通讯失败</string>
+    <string name="device_not_connect">设备未连接</string>
+    <string name="device_not_respond">设备未响应</string>
+</resources>

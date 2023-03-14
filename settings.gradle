@@ -1,0 +1,46 @@
+pluginManagement {
+    repositories {
+        mavenLocal()
+        //mavenCentral name:"MavenRepo", artifactUrls: ["http://10.240.5.209:8081/repository/maven-central/","http://10.240.5.209:8081/repository/jetbrains/","http://10.240.5.209:8081/repository/google-maven-central/","http://10.240.5.209:8081/repository/GoogleMaven/","http://10.240.5.209:8081/repository/maven-google/"]
+        maven {
+            url "http://10.240.5.209:8081/repository/maven-public/"
+            allowInsecureProtocol = true
+        }
+        google()
+        jcenter()
+        mavenCentral()
+    }
+}
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        mavenLocal()
+        //       mavenCentral name:"MavenRepo", artifactUrls: ["http://10.240.5.209:8081/repository/maven-central/","http://10.240.5.209:8081/repository/jetbrains/","http://10.240.5.209:8081/repository/google-maven-central/","http://10.240.5.209:8081/repository/GoogleMaven/","http://10.240.5.209:8081/repository/maven-google/"]
+        maven {
+            url "http://10.240.5.209:8081/repository/maven-public/"
+            allowInsecureProtocol = true
+        }
+        google()
+        jcenter()
+        mavenCentral()
+    }
+}
+
+rootProject.name = "Hems"
+include ':app'
+/**管理业务组件代码*/
+include ':Business'
+/**管理业务系统数据服务层代码*/
+include ':BusiServices'
+include ':BusiServices:hems'
+/**管理核心功能模块代码**/
+include ':Core'
+include ':Core:LibCom'
+/**管理基础工具代码**/
+include ':Base'
+/**Utils和主题**/
+include ':Utils'
+include ':Plugin'
+include ':Core:LibCom:hems'
+
+include ':Base:bluetoothtest'

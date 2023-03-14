@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="read_data_error">Communication failure</string>
+    <string name="data_lenth_error">The data length is illegal.</string>
+    <string name="data_crc_error">The data is invalid.</string>
+    <string name="send_data_error">Communication failure</string>
+    <string name="device_not_connect">Device is not connected.</string>
+    <string name="device_not_respond">Device is not responding.</string>
+</resources>

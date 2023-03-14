@@ -1,0 +1,141 @@
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+    id 'kotlin-kapt'
+}
+//引用公共变量
+def androidId = rootProject.ext.androidId
+def appId = rootProject.ext.appId
+def support = rootProject.ext.dependencies
+def libVersion = rootProject.libVersion
+int appVersionCode = Integer.valueOf(rootProject.properties.get("appVersionCode"))
+def appVersionName = rootProject.properties.get("appVersionName")
+android {
+    compileSdk androidId.compileSdk
+    namespace appId.mainapp
+    defaultConfig {
+        applicationId appId.mainapp
+        minSdk androidId.minSdk
+        targetSdk androidId.targetSdk
+        versionCode appVersionCode
+        versionName appVersionName
+
+        //路由配置项一
+        kapt {
+            arguments {
+                arg("AROUTER_MODULE_NAME", project.getName())
+                //arg(AROUTER_GENERATE_DOC, "enable")
+            }
+        }
+        ndk{
+            abiFilters "arm64-v8a"
+        }
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    signingConfigs {
+        ultra_sign {
+            keyAlias 'Autel'
+            keyPassword 'Autel2018'
+            storeFile file("${rootProject.rootDir}/platform_ultra.keystore")
+            storePassword 'Autel2018'
+        }
+    }
+
+    buildTypes {
+        release {
+            //为了保护代码安全，外发版本apk请打开代码混淆总开关 并配置代码混淆策略做初步代码保护
+            minifyEnabled androidId.minifyEnabled
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.ultra_sign
+        }
+
+        debug {
+            //为了保护代码安全，外发版本apk请打开代码混淆总开关 并配置代码混淆策略做初步代码保护
+            minifyEnabled androidId.minifyEnabled
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.ultra_sign
+        }
+    }
+    compileOptions {
+        sourceCompatibility androidId.sourceCompatibility
+        targetCompatibility androidId.targetCompatibility
+    }
+    kotlinOptions {
+        jvmTarget = androidId.jvmTarget
+    }
+
+    buildFeatures {
+        viewBinding androidId.viewBinding
+    }
+
+    packagingOptions {
+        pickFirst "lib/armeabi-v7a/libc++_shared.so"
+        pickFirst "lib/arm64-v8a/libc++_shared.so"
+    }
+    lintOptions {
+        // if true, stop the gradle build if errors are found
+        abortOnError false
+    }
+    applicationVariants.all { variant ->
+        variant.outputs.all {
+            if (variant.buildType.name.equals("release")) {
+                outputFileName = "HemsV"+ appVersionName+".apk"
+            }
+        }
+    }
+}
+
+afterEvaluate {
+    tasks.matching {
+        (it.name.equalsIgnoreCase('assemble')
+                || it.name.equalsIgnoreCase('assembleRelease'))
+    }.each { task ->
+        task.doLast {
+            //新版本gradle变化需要做的拷贝工作
+            //复制用户版本
+            def appReleaseDir = "${rootProject.rootDir}/version"
+            File file = new File("${appReleaseDir}")
+            if (!file.exists()) {
+                file.mkdirs()
+            }
+            copy {
+                from("build/outputs/apk/release")
+                into("${appReleaseDir}")
+                include('*.apk', 'output.json')
+            }
+        }
+    }
+}
+
+dependencies {
+    /**
+     * 依赖引入常用命令：
+     * implementation-不能传递依赖，不将自己依赖的库暴露给依赖它的库使用。好处：避免对依赖它的库造成依赖冲突，每个组件依赖结构更清晰。
+     * api-依赖可传递，将自己依赖的库也暴露给依赖它的库使用，避免重复配置。
+     * 本框架因组件间会有灵活拆解，自由组合打包的需求，因此此处优先推荐使用前者配置（implementation）
+     */
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    //循环引入公共依赖库
+    support.each { k, v -> implementation v }
+
+    //子组件依赖配置
+    if(!isBusinessRelease&&!isBusiServiceRelease&&!isCoreRelease&&!isBaseRelease&&!isUtilsRelease){
+        implementation project(path: ':BusiServices:hems')
+        implementation project(path: ':Core:LibCom:hems')
+    }else{
+
+    }
+
+    //自有库配置
+    implementation "com.autel.core:domain:${libVersion.core_domain}"
+    implementation "com.autel.utils:utils:${libVersion.utils}"
+    implementation "com.autel.utils:theme:${libVersion.theme}"
+
+    //路由配置项二
+    kapt "com.alibaba:arouter-compiler:${libVersion.arouter_compiler_version}"
+    implementation 'com.google.code.gson:gson:2.9.1'
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+}

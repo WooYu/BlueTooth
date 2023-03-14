@@ -1,0 +1,37 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+buildscript {
+
+    dependencies {
+        //字符处理插件
+//        classpath 'com.autel.plugin:strcollect:1.0.1'
+        //路由配置项
+        classpath 'com.alibaba:arouter-register:1.0.2'
+    }
+}
+
+
+plugins {
+    id 'com.android.application' version '7.3.1' apply false
+    id 'com.android.library' version '7.3.1' apply false
+    id 'org.jetbrains.kotlin.android' version '1.6.20' apply false
+    id 'org.jetbrains.kotlin.jvm' version '1.5.31' apply false
+}
+
+apply from : "config.gradle"
+//路由全局配置项
+apply plugin: 'com.alibaba.arouter'
+
+/*//多语言字符资源收集替换插件插件依赖
+apply plugin: 'com.autel.plugin.strcollect'
+//多语言字符资源收集替换插件插件配置
+configSwitch{
+    isApply = false   //true 应用该插件  false 不应用该插件
+    referenceType = "values-zh"   //缺省值的参考语言类型
+    modeType {
+        it.isReplace = false //true 替换excel资源到项目,false收集项目资源到excel
+    }
+}*/
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
